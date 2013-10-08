@@ -51,6 +51,23 @@ class LinuxSerialPort(object):
         for p in usb_serial_ports:
             ports.append(serial_for_url('/dev/'+p, do_not_open=True))
 
+
+        """
+        also check for old school serial ports, my hope is that this will enable
+        both USB serial adapters and standard serial ports
+
+        Scans COM1 through COM255 for available serial ports
+
+        returns a list of available ports
+        """
+        for i in range(256):
+            try:
+                p = Serial(i)
+                p.close()
+                ports.append(p)
+            except SerialException:
+                pass
+
         return ports
 
 
